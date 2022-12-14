@@ -9,7 +9,7 @@ rm(list = ls())
 
 
 # App version
-app_v <- "001 (18.11.2022)"
+app_v <- "002 (14.12.2022)"
 
 
 # Import libraries
@@ -77,7 +77,7 @@ kuivuus <- subset(kuivuus, DRI >= 0) %>%
     DVI_nro = row_number()
   )
 
-
+kuivuus_df <- data.frame(kuivuus)
 
 # Select TOP 20 municipalities for DVI barchart and wrangle data
 DVI_top20 <- subset(kuivuus, DVI_nro <= 20)
@@ -91,7 +91,15 @@ DVI_top20 <- DVI_top20 %>%
          value="Osuus", -1, -"DVI_nro")
 
 
+# Data for donut chart with share of vulnerability indicators 
+kuivuus2 <- data.frame(kuivuus[,c(1,3:9)])
+kuivuus2 <- kuivuus2 %>%
+  gather(key = "Haavoittuvuustekijä",
+         value="Osuus", -1)
 
+# Parameters for selecting municipality
+locations <- unique(kuivuus2$Kunta) %>%
+  sort()
 
 
 #### ShinyApp Server -----------------------------------------------------------
@@ -119,6 +127,7 @@ server <- function(input, output, session){
   
   
   output$map1 <- renderLeaflet({
+    
     leaflet(kuivuus) %>%
       addProviderTiles(providers$CartoDB.Positron,
                        option=leafletOptions(minZoom = 5, maxZoom = 7)) %>%
@@ -192,13 +201,24 @@ server <- function(input, output, session){
         baseGroups = c("Kuivuusriski (DRI)", "Kuivuusvaara (DHI)", "Kuivuushaavoittuvuus (DVI)"),
         options = layersControlOptions(collapsed = F)) 
     
+  
   })
 
-  #
+  # NOT WORKING ATM. Update the location selectInput on map click (https://www.r-bloggers.com/2016/03/r-shiny-leaflet-using-observers/)
+  # observeEvent(input$map1_marker_click, { 
+  #   p <- input$map1_marker_click
+  #   if(!is.null(p$id)){
+  #     if(is.null(input$location) || input$location!=p$id) updateSelectInput(session, "location", selected=p$id)
+  #   }
+  # })
+  
+  
+  # TOP 20 municipalities
   output$plo <- renderggiraph({
 
     library(hrbrthemes)
     library(forcats)
+
 
     DVI_top20 <- DVI_top20 %>%
       mutate(Kunta = fct_reorder(Kunta, desc(DVI_nro)))
@@ -214,42 +234,43 @@ server <- function(input, output, session){
       geom_bar(position = "fill", stat = "identity") +
       
       scale_x_continuous(n.breaks=10, label = scales::percent)+
+      guides(fill=guide_legend(ncol=3))+
+
       
-      # scale_fill_discrete(labels=c('Väestön haavoittuvuus','Alkutuotannon merkitys', 'Maatalouden vedenkäyttö', 'Teollisuuden vedenkäyttö',
-      #                              'Yhdyskuntien vedenkäyttö', 'Peltojen kuivuusherkkyys','Peltoisuus'))+
+      scale_fill_brewer(palette = "Paired")+
       # # 
-      scale_color_manual(values = c("Alkutuotanto" = '#7fc97f',
-                                    "Maatalous"="#beaed4",
-                                    "Teollisuus"="#fdc086",
-                                    "Yhdyskunnat" = "#ffff99",
-                                    'Kuivuusherkkyys'= "#386cb0",
-                                    'Peltoisuus'= "#f0027f",
-                                    'Väestörakenne'="#bf5b17")) +
+      # scale_color_manual(values = c("Alkutuotanto" = '#7fc97f',
+      #                               "Maatalous"="#beaed4",
+      #                               "Teollisuus"="#fdc086",
+      #                               "Yhdyskunnat" = "#ffff99",
+      #                               'Kuivuusherkkyys'= "#386cb0",
+      #                               'Peltoisuus'= "#f0027f",
+      #                               'Väestörakenne'="#bf5b17")) +
       
 
       
       # Style settings
       theme(axis.title.x=element_blank(),
-              axis.text.x = element_text(size=25, face = "bold"),
-              axis.text.y = element_text(size=25),
-              axis.title.y = element_text(size = 25),
-              panel.background = element_blank(),
-              axis.line = element_line(colour="grey"),
-              legend.position ="bottom",
-              legend.title=element_blank(),
-              legend.justification = "centre",
-              legend.margin = margin(),
-              legend.background = element_blank(),
-              legend.text = element_text(size=25),
-              legend.spacing.y = unit(0.5, "cm"),
-              legend.box = "vertical",
-              legend.box.just = 'left',
-              legend.key.height = unit(1.2, "cm"),
-              legend.key.size = unit(1, "cm"),
-              legend.box.background = element_rect(alpha("white", 0.3), color =NA),
-              plot.title = element_text(size=25))
+            axis.text.x = element_text(size=25, face = "bold"),
+            axis.text.y = element_text(size=25),
+            axis.title.y = element_text(size = 25),
+            panel.background = element_blank(),
+            axis.line = element_line(colour="grey"),
+            legend.position ="bottom",
+            legend.title=element_blank(),
+            legend.justification = "centre",
+            legend.margin = margin(),
+            legend.background = element_blank(),
+            legend.text = element_text(size=20),
+            legend.spacing.y = unit(0.5, "cm"),
+            legend.spacing.x = unit(0.75, "cm"),
+            legend.box = "vertical",
+            legend.box.just = 'left',
+            legend.key.height = unit(1.2, "cm"),
+            legend.key.size = unit(1, "cm"),
+            legend.box.background = element_rect(alpha("white", 0.3), color =NA),
+            plot.title = element_text(size=25))
               
-
 
     # display plot
     ggiraph(code = print(plo),
@@ -260,37 +281,69 @@ server <- function(input, output, session){
   
   # Create donut chart for vulnerability
   
-  # output$plo2 <- renderggiraph({
-  #   
-  #   # Hole size
-  #   hsize <- 3
-  #   
-  #   df <- df %>% 
-  #     mutate(x = hsize)
-  #   
-  #   plo2 <- ggplot(
-  #     df, aes(x = hsize, y = value, fill = group)) +
-  #     
-  #     geom_col(color = "black") +
-  #     geom_text(aes(label = value),
-  #               position = position_stack(vjust = 0.5)) +
-  #     coord_polar(theta = "y") +
-  #     scale_fill_brewer(palette = "GnBu") +
-  #     xlim(c(0.2, hsize + 0.5)) +
-  #     
-  #     theme(panel.background = element_rect(fill = "white"),
-  #           panel.grid = element_blank(),
-  #           axis.title = element_blank(),
-  #           axis.ticks = element_blank(),
-  #           axis.text = element_blank())
-  #   
-  #   
-  #   
-  #   
-  # })
-  
-  
-  # Create table
+  output$plo2 <- renderggiraph({
+    
+    library(ggrepel)
+    
+    # Hole size
+    hsize <- 2
+    
+    # Data with vulnerability indicators and their share per municipality
+    kuivuus2 <- kuivuus2 %>%
+      mutate(x = hsize,
+             perc = Osuus/sum(kuivuus2[kuivuus2$Kunta == input$location,"Osuus"]))
+    
+    # sum(kuivuus2[kuivuus2$Kunta == "Helsinki","Osuus"])
+    # View(kuivuus2)
+
+    # Create plot
+    plo2 <- ggplot(
+      kuivuus2[kuivuus2$Kunta == input$location,], aes(x = hsize, y = perc, fill = Haavoittuvuustekijä)) +
+
+      geom_col(color = "black") +
+      geom_text_repel(aes(label = paste(sprintf("%0.0f", round(perc*100, digits = 0)), " %")),
+                position = position_stack(vjust = 0.5),
+                size =20) +
+      
+      labs(title= paste(input$location,
+                        "\nKuivuushaavoittuvuusindeksi (DVI): ", round(kuivuus_df[kuivuus_df$Kunta == input$location, "DVI"],2))) +
+      coord_polar(theta = "y") +
+      scale_fill_brewer(palette = "Paired") +
+      xlim(c(0.2, hsize + 0.5)) +
+      guides(fill=guide_legend(ncol=2))+
+
+      theme(panel.background = element_blank(),
+            panel.grid = element_blank(),
+            axis.title = element_blank(),
+            axis.ticks = element_blank(),
+            axis.text = element_blank(),
+            legend.background = element_blank(),
+            legend.text = element_text(size=50),
+            legend.spacing.y = unit(1, "cm"),
+            legend.spacing.x = unit(1.5, "cm"),
+            legend.box = "vertical",
+            legend.box.just = 'left',
+            legend.key.height = unit(1.25, "cm"),
+            legend.key.size = unit(1.5, "cm"),
+            plot.background = element_blank(),
+            legend.box.background = element_rect(alpha("white", 0.3), color =NA),
+            legend.position="bottom",
+            legend.title=element_blank(),
+            plot.title = element_text(size=55))
+    
+
+    
+    # display plot
+    ggiraph(code = print(plo2),
+            width_svg = 17,
+            height_svg = 17)
+
+
+
+
+  })
+
+    # Create table
   output$table1 <- renderReactable({
     
     # Create dataframe 
@@ -351,14 +404,31 @@ ui <- shinyUI(fluidPage(
                  width = 3,
                  id = "sidebar",
                  
-                 helpText("Tarkastele kuivuusriskiä Suomessa."),
-                 helpText("Sivustolle on koottu tietoa arvioidusta kuivuusriskistä, kuivuusvaarasta ja haavoittuvuudesta kuivuudelle Suomessa kuntatasolla. Valitse haluamasi karttataso tai tarkastele taulukosta riskin suuruutta kunnittain. Kuvaajasta näkyy, kuinka haavoittuvuus kuivuudelle muodostuu valitussa kunnassa. Voit valita kunnan kartalta tai alasvetovalikosta."),
-                 
+                 strong("Tarkastele kuivuusriskiä Suomessa"),
+                 helpText("Sivustolle on koottu tietoa arvioidusta kuivuusriskistä, kuivuusvaarasta ja haavoittuvuudesta kuivuudelle Suomessa kuntatasolla. Valitse haluamasi karttataso tai tarkastele kuvaajista ja taulukosta riskin suuruutta kunnittain."),
+                 div(),
                  br(),
+                 helpText("Kuivuushaavoittuvuuden muodostuminen valitussa kunnassa. Valitse kunta alasvetovalikosta."),
                  
+                 # Select input municipality
+                 selectInput(inputId = "location",
+                             label = HTML("Valitse kunta"),
+                             choices = locations,selected = ""),
+                 
+                 # Graph
+                 ggiraphOutput("plo2", 
+                               width = "100%",
+                               height = "100%"),
+                 
+                 helpText("Lue lisää muuttujista ja menetelmistä 'Lisätietoa'-välilehdeltä."),
+                 div(),
+                 br(),
+                 HTML(paste("<p id='version-info' style='color: grey; font-size: small;'>Versio<br>", 
+                            app_v, "</p>")),
                  
                  
                ),
+               
                
                
                # Main panel
@@ -367,8 +437,8 @@ ui <- shinyUI(fluidPage(
                  fluidRow(
                    
                    column(9,
-                          br(),
-                          strong("KARTTA: Visualisoi kuivuusriskiä, kuivuusvaaraa ja kuivuushaavoittuvuutta Suomen kunnissa"),
+                          
+                          strong("KARTTA: Tarkastele kuivuusriskiä, kuivuusvaaraa ja kuivuushaavoittuvuutta Suomen kunnissa"),
                           # Map
                           leafletOutput("map1", height = 750, width = "100%"),
                           

@@ -61,12 +61,14 @@ Jos toinen DHI tai DVI indekseistä on nolla, kuivuusriskiä ei ole. Toisaalta, 
  
   
 ##### **Kartta**
-* Kartalla kuvataan kuntakohtaisesti kuivuusvaara (DHI), kuivuushaavoittuvuus (DVI) ja kuivuusriski (DRI) omilla karttatasoillaan. 
+* Kartalla kuvataan kuntakohtaisesti kuivuusvaara (DHI), kuivuushaavoittuvuus (DVI) ja kuivuusriski (DRI) omilla karttatasoillaan.Indeksit esitetään välillä 0-1. Mitä lähempänä arvo on numeroa 1, sitä suurempaa riski/vaara/haavoittuvuus on.
 * Kuivuusvaarasta on tuotettu lisäksi kartat 3. jakovaiheen vesistöalueittain, mutta joita ei ole esitetty tässä sovelluksen versiossa. Ota yhteyttä, mikäli tarkempi analyysi kiinnostaa.
 * Karttojen visualisoinnissa käytetään kvintiililuokitusta. Luokituksessa indeksin arvo on jaettu viiteen yhtä suureen luokkaan (ts. jokaisessa luokassa on yhtä monta havaintoa). Luokitustapa mahdollistaa parhaiten suhteellisten ilmiöiden tulkinnan (kuten haavoittuvuuden).
 
 
-##### **Kuvaaja**
+##### **Kuvaajat**
+* Sivupaneelin ympyrädiagrammi kuvaa eri haavoittuvuusindikaattorien (7 kpl) osuutta kokonaishaavoittuvuusindeksissä. Kuvaajasta nähdään, kuinka suuri merkitys esimerkiksi maatalousmuuttujilla on kuivuushaavoittuvuuteen. Kokonaishaavoittuvuusindeksi esitetään välillä 0-1. Mitä lähempänä arvo on numeroa 1, sitä suurempaa haavoittuvuus on.
+* Sivun alalaidan kuvaaja esittää TOP 20 haavoittuvinta kuntaa indeksin perusteella, sekä haavoittuvuusindikaattorien osuudet.
 
 
 ##### **Taulukko**
