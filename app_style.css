@@ -1,0 +1,57 @@
+/* CSS style sheet for KUHASUO shiny app */
+
+* { 
+  font-family: Raleway !important;
+   
+  }
+
+/* Text & title specifications */
+
+h4 { 
+  font-family: Raleway; 
+  font-size: 15.19px; 
+  font-style: normal; 
+  text-align: left;
+  color: #275A90;
+  font-weight: 400; 
+  line-height: 15.4px; }
+  
+h3 { 
+  font-family: Raleway; 
+  font-size: 22.39px; 
+  font-style: normal; 
+  text-align: left;
+  color: #000000;
+  font-weight: 400; 
+  line-height: 20px; }
+  
+p { 
+  font-family: Raleway; 
+  font-size: 14px; 
+  font-style: normal; 
+  font-variant: normal; 
+  font-weight: 400; 
+  line-height: 20px; } 
+  
+  
+
+/* Customized bsTooltip */
+.tooltip-inner {
+  width: 400px;
+  color: black;
+  background-color: white;
+  font-size: small;
+  border: 1px solid black;
+}
+
+.tippy-tooltip.custom-theme {
+  background-color: white !important;
+  color: black;
+  font-family: Raleway, sans-serif;
+  font-size: 18px;
+}
+
+.container-fluid {  
+  max-width: 12600px; /* or 950px */
+  
+}
