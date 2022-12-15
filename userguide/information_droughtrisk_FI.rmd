@@ -2,7 +2,8 @@
 title: "KUHASUO drought risk analysis, user guide and information (in Finnish)"
 author: "Sara Todorovic"
 date: "12 12 2022"
-
+fig_width: 6 
+fig_height: 4 
 ---
 <br>
 
@@ -29,24 +30,37 @@ Kuivuusriski määritellään vahingollisten seurauksien todennäköisyydeksi. T
 ***
 
 ### Aineisto ja menetelmät
-**Kuivuusvaaraa** arvioitiin Ilmatieteenlaitoksen __sadanta- ja lämpötilahavaintojen__ ja SYKEn vesistömallijärjestelmän simuloitujen (1962–2020) __maankosteuden__ ja __valunnan__ arvojen avulla.
 
-**Kuivuushaavoittuvuuden** arvioinnissa hyödynnettiin monipuolisesti tilastoja. __Teollisuuden vedenkulutuksen__ tilastot saatiin ympäristösuojelun tietojärjestelmä VAHTI:sta. __Yhdyskuntien vedenkäyttöä__ arvioitiin suhteessa Tilastokeskuksen tilastoimaan väestömäärään teoreettisella asukaskohtaisella vedenkulutuksella. __Maatalouden vedenkulutuksessa__ huomioitiin kasteluveden käyttö sekä karjatalouden käyttämä vesimäärä. Kasteluveden tarvetta arvioitiin SYKEn vedenlaadun ja ravinnekuormituksen mallinnus- ja arviointijärjestelmä VEMALA:lla, jonka avulla on mahdollista laskea peltolohkokohtaisesti teoreettista kastelutarvetta. Karjatalouden vedenkulutustiedot laskettiin Luonnonvarakeskuksen ylläpitämistä tilastoista elänimääristä. VEMALA-mallin aineistoja hyödynnettiin myös kuivuudelle haavoittuvien peltolohkojen tunnistamisessa. Väestörakennetta sekä alkutuotannon merkitystä elinkeinorakenteesta kuvaavat muuttujat laskettiin Tilastokeskuksen kuntien avainluvut -tietokannasta.
+#### Kuivuusvaara
+Kuivuusvaaraa arvioitiin Ilmatieteen laitoksen __sadanta- ja lämpötilahavaintojen__ ja SYKEn vesistömallijärjestelmän simuloitujen (1962–2021) __maankosteuden__ ja __valunnan__ arvojen avulla. Arvot kuvaavat meteorologista, hydrologista sekä maataloudellista kuivuutta. Indeksit laskettiin käyttämällä alun perin sadanta-aineistolle (SPI) kehitettyä standardisoitua menetelmää (McKee ym. 1993). Indeksejä hyödynnetään tunnistamaan ja monitoroimaan kuivuutta. Indeksit (Standardized Precipitation and Evaporation Index (SPEI), Standardized Runoff Index (SRI) ja Soil Moisture Anomaly (SMA)) laskettiin SYKEn vesistömallijärjestelmällä kaikille kolmannen jakovaiheen valuma-alueille aikajaksolle 1962–2021 kuuden kuukauden aika-askeleella (esim. SPEI 6kk).
 
-![Kuivuusriskianalyysin menetelmä](method.png)
+Kustakin kolmannen jakovaiheen indeksin aikasarjasta tunnistettiin kuivuusjaksoja, joille laskettiin niiden ominaisuudet. Tässä työssä kuivuusjaksot jaettiin neljään luokkaan niiden esiintymistodennäköisyyden ja intensiteetin mukaan (lievä, kohtalainen, vakava, erittäin vakava).
 
-**Kuva 1** - *Kuivuusriskianalyysin menetelmä. Kuvassa kuivuusvaara- ja haavoittuvuusmuuttujat, indeksit ja lopputuotos.*
+#### Kuivuushaavoittuvuus
+Kuivuushaavoittuvuuden arvioinnissa hyödynnettiin monipuolisesti tilastoja. *Teollisuuden vedenkulutuksen* tilastot saatiin ympäristösuojelun tietojärjestelmä VAHTI:sta. *Yhdyskuntien vedenkäyttöä* arvioitiin suhteessa Tilastokeskuksen tilastoimaan väestömäärään teoreettisella asukaskohtaisella vedenkulutuksella. *Maatalouden vedenkulutuksessa* huomioitiin kasteluveden käyttö sekä karjatalouden käyttämä vesimäärä. Kasteluveden tarvetta arvioitiin SYKEn vedenlaadun ja ravinnekuormituksen mallinnus- ja arviointijärjestelmä VEMALA:lla, jonka avulla on mahdollista laskea peltolohkokohtaisesti teoreettista kastelutarvetta. Karjatalouden vedenkulutustiedot laskettiin Luonnonvarakeskuksen ylläpitämistä tilastoista elänimääristä. VEMALA-mallin aineistoja hyödynnettiin myös kuivuudelle haavoittuvien peltolohkojen tunnistamisessa. *Väestön haavoittuvuutta* (ts. haavoittuvien ihmisryhmien osuus taajama-alueiden ulkopuolella) sekä *alkutuotannon merkitystä elinkeinorakenteesta* kuvaavat muuttujat laskettiin Tilastokeskuksen kuntien avainluvut -tietokannasta.
 
-Kokonaishaavoittuvuusindeksin muodostamiseksi yksittäiset haavoittuvuusmuuttujat tuli laskea yhteen ja painottaa keskenään. Mikäli muuttujia ei painoteta indeksin muodostamisessa, saa jokainen muuttuja yhtä suuren painoarvon osana kokonaisindeksiä. Visualisoinneissa näytetään painotettu haavoittuvuusindeksi. Muuttujien keskinäisessä painottamisessa hyödynnettiin asiantuntija-arviota, minkä jälkeen lopullinen indeksin tulos standardoitiin välille 0-1.
+*Kokonaishaavoittuvuusindeksin* muodostamiseksi yksittäiset haavoittuvuusmuuttujat tuli laskea yhteen ja painottaa keskenään. Mikäli muuttujia ei painoteta indeksin muodostamisessa, saa jokainen muuttuja yhtä suuren painoarvon osana kokonaisindeksiä. Visualisoinneissa näytetään painotettu haavoittuvuusindeksi. Muuttujien keskinäisessä painottamisessa hyödynnettiin asiantuntija-arviota, minkä jälkeen lopullinen indeksin tulos standardoitiin välille 0-1.
 
-Painottamisessa huomioitiin seuraavat asiat:
+*Painottamisessa huomioitiin seuraavat asiat:*
 *	Sektorin merkitys kuivuuden vaikutusten ja sen vaikutuksista selviämisen kannalta
 *	Kuivuuden potentiaalisten vaikutusten mittaluokka ja laajuus
 *	Veden tarve nykytilassa sekä mahdollinen tuleva tarve (huomioiden mm. ilmastonmuutoksen vaikutukset, väestönmuutos, talouskehitys, yms.)
 
 Resilienssiä tai kuivuuden vaikutuksiin varautumista ei huomioitu kansallisessa haavoittuvuustarkastelussa, sillä siitä ei ole mahdollista saada kattavaa ja kuvaavaa aineistoa valtakunnallisesti. Resilienssin ja erilaisten varautumistoimien merkitystä kuivuusriskiin tulee arvioida tarkemmin alueellisessa tarkastelussa. Lisäksi painottamisessa pyrittiin välttämään korostamasta sellaisia muuttujia, joilla on pieni vaihteluväli.
- 
-Kuivuusriskikartat tuotettiin yhdistämällä tieto kuivuusvaarasta (DHI) arvioon kuivuushaavoittuvuudesta (DVI). Menetelmäksi valittiin geometrinen keskiarvo, joka on yleisesti käytetty menetelmä yhdistelmä indeksiä laskettaessa. Kuivuusriski-indeksi (DHI) laskettiin kaavalla:
+
+
+![Kuivuusriskianalyysin menetelmä](method.png)
+
+**Kuva 1** - *Kuivuusriskianalyysin menetelmä. Kuvassa kuivuusvaara- ja haavoittuvuusmuuttujat, indeksit ja lopputuotos.*
+
+
+![Kuivuushaavoittuvuusmuuttujat](DVI_indicators.png)
+
+**Kuva 2** - *Kuivuushaavoittuvuusanalyysiin valitut muuttujat, niitä kuvaavat indikaattorit, oletettu vaikutusmekanismi sekä aineistolähde.* 
+
+
+#### Kuivuusriskikartat
+Kartat tuotettiin yhdistämällä tieto kuivuusvaarasta (DHI) arvioon kuivuushaavoittuvuudesta (DVI). Menetelmäksi valittiin geometrinen keskiarvo, joka on yleisesti käytetty menetelmä yhdistelmä indeksiä laskettaessa. Kuivuusriski-indeksi (DHI) laskettiin kaavalla:
 
 *DRI = (DHI ×DVI)^(1/2)*
 

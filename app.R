@@ -329,7 +329,7 @@ server <- function(input, output, session){
             legend.box.background = element_rect(alpha("white", 0.3), color =NA),
             legend.position="bottom",
             legend.title=element_blank(),
-            plot.title = element_text(size=55))
+            plot.title = element_text(size=55, hjust=0.5, vjust = -1))
     
 
     
